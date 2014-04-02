@@ -9,4 +9,4 @@ GET     /                           controllers.Application.index
 GET     /search                     controllers.Application.search(isbn: Option[String], title: Option[String], author: Option[String])
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET     /assets/*file               controllers.Assets.at(path="/public/", file)
