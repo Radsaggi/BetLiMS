@@ -20,7 +20,6 @@ object Binders {
           case _ => Left("Unable to bind a BookSearch")
         }
       }
-      println(s"Created: $c")
     }
 
     override def unbind(key: String, bs: BookSearch): String = {
