@@ -217,13 +217,13 @@ p {
 
 /*copied*/
 
-nav #login {
+#login {
   border-right: 1px solid #ddd;
   box-shadow: 1px 0 0 #fff;  
 }
 
-nav #login-trigger,
-nav #signup a {
+#login-trigger,
+#signup a {
   display: inline-block;
   *display: inline;
   *zoom: 1;
@@ -236,11 +236,11 @@ nav #signup a {
   color: #85859c;
 }
 
-nav #signup a {
+#signup a {
   border-radius: 0 3px 3px 0;
 }
 
-nav #login-trigger {
+#login-trigger {
   border-radius: 3px 0 0 3px;
   color: #fff;
   text-align: center;
@@ -248,14 +248,14 @@ nav #login-trigger {
   text-decoration: none;
 }
 
-nav #login-trigger:hover,
-nav #login .active,
-nav #signup a:hover {
+#login-trigger:hover,
+#login .active,
+#signup a:hover {
   background: #fff;
   color: #69699c;
 }
 
-nav #login-content {
+#login-content {
   display: none;
   position: absolute;
   top: 24px;
@@ -268,7 +268,7 @@ nav #login-content {
   border-radius: 3px 0 3px 3px;
 }
 
-nav li #login-content {
+li #login-content {
   right: 0;
   width: 250px;  
 }
