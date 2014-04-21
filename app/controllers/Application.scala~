@@ -284,7 +284,7 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
  * Validates EDatabase to edatabaseJSON 
  * If found to be invalid sends Invalid EDatabase Publisher or else
  * removes  EDatabase  
- *@params name is the string provided
+ * @params name is the string provided
  */ 
   def links_edatabases_insert(name: String) = Action(parse.json) { request =>
     val edatabaseJSON = request.body
