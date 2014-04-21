@@ -23,16 +23,14 @@ import play.api.mvc._
 import Models._;
 import FormEncapsulators._;
 /**
- * Creates a BetLiMSApplication with a 
- * databaseService as specified
- *@param databaseService creates new databasedriver
- *@param BetLiMSApplication creates a new object
- *Returns the replaced databaseService
+ *The main controller for BetLiMS server  BetLiMSApplication with a 
+ *based on injected dependency  using Slick as frontend
+ *A new object  BetLiMSApplication is defined
  */
 object BetLiMSApplication extends BetLiMSApplication with BetLiMSRestfulServer {
 /**
  * @override the  databasedriver is 
- * replaced with new databaseService
+ * injects a dependency
  * 
  */
   override lazy val databaseService = SlickDatabaseUtil.getDBUtil()(play.api.Play.current)
@@ -40,7 +38,7 @@ object BetLiMSApplication extends BetLiMSApplication with BetLiMSRestfulServer {
 
 
 /**
- * Returns a Result,that represents the HTTP response 
+ * Represents the HTTP response 
  * message to send back to the web browser.
  */
 trait BetLiMSApplication extends Controller with DatabaseServiceProvider{
@@ -51,9 +49,9 @@ trait BetLiMSApplication extends Controller with DatabaseServiceProvider{
 /**
  *Defines the action to Search books 
  *in the database by the object named list
- *Retruns the HTTP response message 
+ *Returns the HTTP response message 
  *to the browser which is a filtered list
- *@param bs is the object of searching a book by creating a result "list" 
+ *@param bs  is BookSearch parameter 
  */
   def search(bs: BookSearch) = Action {
     val list = databaseService.booksearch(bs)
@@ -61,10 +59,10 @@ trait BetLiMSApplication extends Controller with DatabaseServiceProvider{
   }
 
 /**
- *Accepts request from the forms and performs the action of booksearch
+ *Accepts request from the forms and performs the action
  *Redirects the result to the searchfunction
  *Sends a request and if search is successful it is 
- *redirected to the search interface orelse returns BadRequest    
+ *redirected to the search interface or else returns BadRequest    
  */
   def searchPost() = Action { implicit request =>
     println("Trying to bind form request")
@@ -76,9 +74,8 @@ trait BetLiMSApplication extends Controller with DatabaseServiceProvider{
 
 }
 /**
- *Searches for the EJournalPublishers 
- *Returns the result to ejournalPublishers
- *@param ejournalPublishers searches in the database
+ *Trait here is an interface with
+ *implementation
  */ 
 trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
   import JsonWrappers._
@@ -89,9 +86,9 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
   }
 
 /**
- *Adds new book with the code of string provided and sends request
- *Returns Invalid EJournal Publisher if its not successful orelse takes valid request
- *@param code is a string which is the code of the book
+ *Adds new book with the code provided
+ *Invalid EJournal Publisher if its not successful or else takes valid request
+ *@param code  which is the code of the ejournalPublisher
  */  
   def links_ejournalPublishers_insert(code: String) = Action(parse.json) { request =>
     val ejPublisherJSON = request.body
@@ -104,7 +101,7 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
     )
   }
 /**
- *Deletes book with the name of string provided by sending request 
+ *Deletes ejournalPublisher with the name based on injected dependency by sending request 
  *Returns Invalid EJournal Publisher if its not successful orelse takes valid request
  *@param code is a string which is code of book 
  */  
