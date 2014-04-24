@@ -1,5 +1,5 @@
 
-@(form : Form[BookSearch])(books: Option[List[(Book, BookVariables)]])
+@(form: Form[BookSearch])(books: Option[List[Book]])(implicit user: Option[User], loginForm: Form[UserLogin])
 
 @main("Search")("search") {
    
@@ -34,8 +34,7 @@
              <div class="author">Author: @book.author </div>
              <div class="copies">No. of Copies: @bv.copies </div>
              Publisher: 
-             <div class="right"><input type="checkbox" /></div>
-
+             <input type="checkbox" checked="unchecked" id="right">
   </div>
   
   }
