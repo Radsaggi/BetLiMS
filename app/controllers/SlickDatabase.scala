@@ -23,8 +23,6 @@ trait SlickDatabaseTables {
     def publishYear = column[Int]("publish_year")
     def pages = column[Int]("pages")
     
-    def variables = foreignKey(bookVariablesTableName, isbn, bookVariables)(_.isbn)
-
     def * = (isbn, title, author, publisher, edition, publishYear, pages,
       callNo) <> (Book.tupled, Book.unapply)
   }
@@ -364,7 +362,7 @@ trait SlickDatabaseService extends DatabaseService with DatabaseServiceMessages 
   def bookInfo(isbn: String) = DB(name) withSession { implicit session => 
     val q = for {
       b <- tables.books if (b.isbn === isbn)
-      bv <- b.variables
+      bv <- tables.bookVariables if (bv.isbn === isbn)
     } yield (b, bv)
     q.list.headOption
   }
