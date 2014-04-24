@@ -24,11 +24,14 @@ object Forms {
     )
   }
 
-  val loginForm: Form[UserLogin] = Form {
+  val loginForm:(UserLogin=> Boolean)=> Form[UserLogin] = verify => Form {
     mapping(
       "username" -> nonEmptyText,
       "password" -> nonEmptyText
-    )(UserLogin.apply)(UserLogin.unapply)
+    )(UserLogin.apply)(UserLogin.unapply) verifying (
+      "Invalid email or password", 
+      (ul: UserLogin) => verify(ul)
+    )
   }
 
 }
