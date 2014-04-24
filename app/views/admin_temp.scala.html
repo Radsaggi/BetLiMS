@@ -1,0 +1,34 @@
+@(title : String)(style: String)(content: Html)
+
+<html>
+  <head>
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+        <title>@title</title>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/admin_main.css")' type="text/css" >
+        <link rel="stylesheet" href='@routes.Assets.at(s"stylesheets/${style}.css")' type="text/css" >
+  </head>
+  <body>
+      <div id="cssmenu">
+      <ul id="list">
+	<li><a href=#><span>Home</span></a></li>
+	<li><a href=#><span>Books</span></a></li>
+	<li><a href=#><span>Users</span></a></li>
+      </ul>
+    </div>
+    
+    <div id="page_header">
+       
+       <div id="page_heading">
+	 <h1>
+	 </h1>
+       
+       <h2>
+	 <span>Welcome to IIT PATNA Library</span>
+       </h2>
+       
+     </div>
+    </div>
+    @content
+  </body>
+</html>

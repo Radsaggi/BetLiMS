@@ -1,0 +1,138 @@
+#container {
+            position: fixed;
+            width: 345px;
+            height: 295px;
+            top: 50%;
+            left: 50%;
+            margin-top: -140px;
+            margin-left: -170px;
+            background: #b52530;
+            border-radius: 10px;
+            border-style: double ;
+            border-width:2px;
+            border-color:#cba;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
+	    color:#fff;
+        }
+        form {
+            margin: 0 auto;
+            margin-top: 20px;
+        }
+        label {
+            color: #fff;
+            display: inline-block;
+            margin-left: 18px;
+            padding-top: 10px;
+            font-size: 18px;
+        }
+        p a {
+            font-size: 11px;
+            color: #aaa;
+            float: right;
+            margin-top: -13px;
+            margin-right: 20px;
+         -webkit-transition: all .4s ease;
+            -moz-transition: all .4s ease;
+            transition: all .4s ease;
+        }
+        p a:hover {
+            color: #555;
+        }
+        input {
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 12px;
+            outline: none;
+        }
+        input[type=text],
+        input[type=password] ,input[type=time]{
+            color: #777;
+            padding-left: 10px;
+            margin: 10px;
+            margin-top: 12px;
+            margin-left: 18px;
+            width: 290px;
+            height: 35px;
+            border: 1px solid #c7d0d2;
+            border-radius: 2px;
+            box-shadow: inset 0 1.5px 3px rgba(190, 190, 190, .4), 0 0 0 5px #f5f7f8;
+            
+            transition-duration: 0.3s;
+	    transition-property: transform;
+	    transform: translateZ(0px);
+            }
+        input[type=text]:hover,
+        input[type=password]:hover,input[type=time]:hover {
+            border: 1px solid #b6bfc0;
+            box-shadow: inset 0 1.5px 3px rgba(190, 190, 190, .7), 0 0 0 5px #f5f7f8;
+            transform: scale(1.1);
+            
+        }
+        input[type=text]:focus,
+        input[type=password]:focus,input[type=time]:focus {
+            border: 1px solid #a8c9e4;
+            box-shadow: inset 0 1.5px 3px rgba(190, 190, 190, .4), 0 0 0 5px #e6f2f9;
+        }
+        #lower {
+            background: #b52530;
+            width: 100%;
+            height: 69px;
+            margin-top: 20px;
+              box-shadow: inset 0 1px 1px #fff;
+            border-top: 1px solid #ccc;
+            border-bottom-right-radius: 3px;
+            border-bottom-left-radius: 3px;
+            color:#807423;
+        }
+        input[type=checkbox] {
+            margin-left: 20px;
+            margin-top: 30px;
+        }
+        .check {
+            margin-left: 3px;
+            font-size: 17px;
+            text-shadow: 0 1px 0 #fff;
+	    font-weight:bold;
+        }
+        input[type=submit] {
+            float: right;
+            margin-right: 20px;
+            margin-top: 20px;
+            width: 80px;
+            height: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #df1;
+            background-color: #e88f33; /*IE fallback*/
+            border-radius: 30px;
+            border: 1px solid #66add6;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .5);
+            cursor: pointer;
+        }
+        input[type=submit]:active {
+            background-image: -webkit-gradient(linear, left top, left bottom, from(#6ec2e8), to(#b6e2ff));
+            background-image: -moz-linear-gradient(top left 90deg, #6ec2e8 0%, #b6e2ff 100%);
+            background-image: linear-gradient(top left 90deg, #6ec2e8 0%, #b6e2ff 100%);
+        }
+        #title {
+	    width: 100%;
+	    float:center;
+	    background: #743C33;
+        }
+        #title p {
+	    text-align:center;
+	    color:#234;
+	    font-size:21px;
+        }
+        #title h1 {
+        margin-left:9%;
+	    width: 80%;
+	    height: 95px;
+	    padding-top:50px;
+	    background:#A85C50 ;
+	    font-size: 30px;
+	    text-align: center;
+	    font-family:'Gilda Display', sans-serif;
+	    font-weight:bold;
+	    color:#dbdbdb;
+	    line-height:40px;
+        }

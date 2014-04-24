@@ -1,0 +1,18 @@
+@(message : String)
+
+@admin_temp("Add Book")("admin_addBook"){
+	   
+            <div id="container">
+                <form action="login_process.php" method="post">
+                    <label for="isbn">ISBN:</label>
+                    <input type="text" id="isbn" name="isbn">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title">
+                    <label for="author">Author:</label>
+                    <input type="text" id="author" name="author">
+                    <div id="lower">
+                        <input type="submit" value="ADD BOOKS" align="center">
+                    </div><!---/ lower-->
+                </form>
+            </div>
+   } 
