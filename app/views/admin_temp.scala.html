@@ -1,0 +1,56 @@
+@(title : String)(style: String)(content: Html)
+
+<html>
+  <head>
+  <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+        <title>@title</title>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/admin_main.css")' type="text/css" >
+        <link rel="stylesheet" href='@routes.Assets.at(s"stylesheets/${style}.css")' type="text/css" >
+        <script src='@routes.Assets.at("javascripts/ddmenu.js")' type="text/javascript"></script>
+  </head>
+  <body>
+      <nav id="ddmenu">
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li>Books
+	    <div>
+            <div class="column">
+                
+               
+                <a href="./admin_addBook">Add Books</a>
+                <a href="./admin_issuebook">Issue Book</a>
+                <a href="./admin_returnbook">Return Book</a>
+                <a href="./admin_removebook">Remove Book</a>
+                </div>
+             </div>
+        </li>
+        
+        <li>User
+            <div>
+                <div class="column">
+                    <a href="./admin_addUser">Add User</a>
+                    <a href="./admin_removeUser">Remove User</a>
+                    
+                </div>
+            </div>
+        </li>
+        
+    </ul>
+</nav>
+    
+    <div id="page_header">
+       
+       <div id="page_heading">
+	 <h1>
+	 </h1>
+       
+       <h2>
+	 <span>Welcome to IIT PATNA Library</span>
+       </h2>
+       
+     </div>
+    </div>
+    @content
+  </body>
+</html>
