@@ -346,7 +346,7 @@ trait SlickDatabaseService extends DatabaseService with DatabaseServiceMessages 
   def booksList() = DB(name) withSession { implicit session => 
     val q = for {
       b <- tables.books
-      bv <- b.variables
+      bv <- tables.bookVariables if (bv.isbn === b.isbn)
     } yield (b, bv)
     q.list
   }
