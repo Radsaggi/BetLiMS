@@ -22,9 +22,7 @@ import play.api.data.validation.ValidationError
 
 import Models._
 /**
- * Object JsonWrappers created to define method
- * This object defines the Reads and writes that convert native Scala type into/from JSON
- * Name,Code,URL are directed to respective publisher details
+ * Object JsonWrappers defines the Reads and writes that convert native Scala type into/from JSON
  */
 object JsonWrappers {
   
@@ -54,9 +52,12 @@ object JsonWrappers {
  * the name of the publisher is encoded as publisher.name
  * the url of the publisher is encoded as publisher.url
  * the code of the publisher is encoded as publisher.code 
- * For ex: krooked-name of publisher is encoded as krooked.name
- * 	   url-krooked journal is encoded as krooked.url
- * 	   code is encoded as krooked.code
+ * EJournal("Krooked", 2014, "http://www.krooked.com", "abc") is converted to
+ * {
+ * "name" : Krooked,
+ * "year accessed" : 2014
+ * "url" : http://www.krooked.com
+ * }
  */ 
   implicit val ebookPublisherWrites = new Writes[EBookPublisher] {
     def writes(publisher: EBookPublisher) = Json.obj(
@@ -68,9 +69,12 @@ object JsonWrappers {
 /**
  * the name of the book is encoded as book.name
  * the url of the book is encoded as book.url
- * For example:
- * krooked-name of book is encoded as krooked.name
- * url-krooked book is encoded as krooked.url
+ * EJournal("Krooked", 2014, "http://www.krooked.com", "abc") is converted to
+ * {
+ * "name" : Krooked,
+ * "year accessed" : 2014
+ * "url" : http://www.krooked.com
+ * }
  */  
   implicit val ebookWrites = new Writes[EBook] {
     def writes(book: EBook) = Json.obj(
@@ -81,9 +85,12 @@ object JsonWrappers {
 /**
  * the name of the database is encoded as database.name
  * the url of the database is encoded as database.url
- * For example:
- *         krooked-name of database is encoded as krooked.name
- * 	   url-url of the database  is encoded as krooked.url
+ * EJournal("Krooked", 2014, "http://www.krooked.com", "abc") is converted to
+ * { 
+ * "name" : Krooked,
+ * "year accessed" : 2014
+ * "url" : http://www.krooked.com
+ * }
  */  
   implicit val edatabaseWrites = new Writes[EDatabase] {
     def writes(database: EDatabase) = Json.obj(
@@ -129,7 +136,6 @@ object JsonWrappers {
  * ebookpublisher.url is read as url
  * ebookpulisher.code is read as code
  * ebookpublisher.code,ebookpublisher.url,ebookpublisher.name defaultly reads as code 
- */
  */     
   val ebookPublisherReads: String => Reads[EBookPublisher] = code => (
     (JsPath \ "name").read[String] and
@@ -144,7 +150,7 @@ object JsonWrappers {
  * ebook.url is read as url
  * ebook.publishercode is read as code
  * ebook.code,ebook.url,ebook.publishercode defaultly reads as code 
- */*/     
+ */     
   val ebookReads: (String, String) => Reads[EBook] = (code, name) => (
     (JsPath \ "name").read[String](defaultValueReads(name)) and
     (JsPath \ "url").read[String] and
@@ -156,7 +162,6 @@ object JsonWrappers {
  * edatabase.name is read as name
  * edatabase.url is read as url
  * edatabase.name,edatabase.url defaultly reads as code 
- */
  */     
   val edatabaseReads: (String) => Reads[EDatabase] = (name) => (
     (JsPath \ "name").read[String](defaultValueReads(name)) and
