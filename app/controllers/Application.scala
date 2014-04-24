@@ -11,50 +11,59 @@ object BetLiMSApplication extends BetLiMSApplication with BetLiMSRestfulServer {
   override lazy val databaseService = SlickDatabaseUtil.getDBUtil()(play.api.Play.current)
 }
 
-trait BetLiMSApplication extends Controller with DatabaseServiceProvider{
+trait BetLiMSApplication extends Controller 
+                            with SecuredDatabaseExtension 
+                            with DatabaseServiceProvider {
 
   def index = Action {
-    Ok(views.html.index("Your new application is ready.")(None, Forms.loginForm))
+    Ok(views.html.index("Your new application is ready.")(None, loginForm))
   }
 
-  def search(bs: BookSearch) = Action {
+  def search(bs: BookSearch) = withAuth() { _ => _ =>
     val list = databaseService.booksearch(bs)
-    Ok(views.html.search(Forms.searchForm.fill(bs))(Some(list))(None, Forms.loginForm))
+    Ok(views.html.search(Forms.searchForm.fill(bs))(Some(list))(None, loginForm))
   }
 
-  def searchPost() = Action { implicit request =>
+  def searchPost() = withAuth() { _ => implicit req =>
     println("Trying to bind form request")
     Forms.searchForm.bindFromRequest.fold (
-      fe => BadRequest(views.html.search(fe)(None)(None, Forms.loginForm)),
+      fe => BadRequest(views.html.search(fe)(None)(None, loginForm)),
       bs => Redirect(routes.BetLiMSApplication.search(bs))
     )
   }
   
-  def personal() = Action {
-    val userid = "1201CS41"
-    val issues = databaseService.issueList(userid) map { ie =>
-      (ie.date.getTime, databaseService.bookInfo(ie.isbn).get)
-    }
-    val requests = databaseService.issueRequestList(userid) map { ie =>
-      (ie.date.getTime, databaseService.bookInfo(ie.isbn).get)
-    }
-    val history = databaseService.returnList(userid) take 5 map { re =>
-      (re.issueDate.getTime, databaseService.bookInfo(re.isbn).get, re.returnDate.getTime)
-    }
-    Ok(views.html.personal(issues, requests, history)(None, Forms.loginForm))
+  def personal() = withAuth() {
+    case Some(x: StudentUser) => request =>
+      val userid = x.userid
+      val issues = databaseService.issueList(userid) map { ie =>
+        (ie.date.getTime, databaseService.bookInfo(ie.isbn).get)
+      }
+      val requests = databaseService.issueRequestList(userid) map { ie =>
+        (ie.date.getTime, databaseService.bookInfo(ie.isbn).get)
+      }
+      val history = databaseService.returnList(userid) take 5 map { re =>
+        (re.issueDate.getTime, databaseService.bookInfo(re.isbn).get, re.returnDate.getTime)
+      }
+      Ok(views.html.personal(issues, requests, history)(None, loginForm))
+    case _ => _ => Unauthorized
   }
 
+  def postLoginRedirect = routes.BetLiMSApplication.index
+  def postLoginBadRequest(errForm: Form[UserLogin]): String = ""
+  def postLogout = routes.BetLiMSApplication.index
 }
 
 trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
+  app: BetLiMSApplication =>
   import JsonWrappers._
   
-  def links_ejournalPublishers() = Action {
+  def links_ejournalPublishers() = withAuth() { _ => _ =>
     val ejournalPublishers = databaseService.allEJournalPublishers()
     Ok(Json.toJson(ejournalPublishers))
   }
   
-  def links_ejournalPublishers_insert(code: String) = Action(parse.json) { request =>
+  def links_ejournalPublishers_insert(code: String) = withAuth(parse.json) { 
+    case Some(x: AdminUser) => request =>
     val ejPublisherJSON = request.body
     ejPublisherJSON.validate[EJournalPublisher](ejournalPublisherReads(code)).fold (
       invalid => BadRequest("Invalid EJournal Publisher"),
@@ -63,9 +72,11 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         Ok
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_ejournalPublishers_delete(code: String) = Action(parse.json) { request =>
+  def links_ejournalPublishers_delete(code: String) = withAuth(parse.json) {
+    case Some(x: AdminUser) => request =>
     val ejPublisherJSON = request.body
     ejPublisherJSON.validate[EJournalPublisher](ejournalPublisherReads(code)).fold (
       invalid => BadRequest("Invalid EJournal Publisher"),
@@ -74,9 +85,10 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         Ok
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_ejournals(code: String) = Action {
+  def links_ejournals(code: String) = withAuth() { _ => _ =>
     databaseService.allEJournals(code).map { list =>
       Ok(Json.toJson(list))
     } getOrElse {
@@ -84,7 +96,8 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
     }
   }
   
-  def links_ejournals_insert(code: String, name: String) = Action(parse.json) { request =>
+  def links_ejournals_insert(code: String, name: String) = withAuth(parse.json) { 
+    case Some(x: AdminUser) => request =>
     val ejournalJSON = request.body
     ejournalJSON.validate[EJournal](ejournalReads(code, name)).fold (
       invalid => BadRequest("Invalid EJournal"),
@@ -96,9 +109,11 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         }
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_ejournals_delete(code: String, name: String) = Action(parse.json) { request =>
+  def links_ejournals_delete(code: String, name: String) = withAuth(parse.json) {
+    case Some(x: AdminUser) => request =>
     val ejournalJSON = request.body
     ejournalJSON.validate[EJournal](ejournalReads(code, name)).fold (
       invalid => BadRequest("Invalid EJournal"),
@@ -110,14 +125,16 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         }
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_ebookPublishers() = Action {
+  def links_ebookPublishers() = withAuth() { _ => _ =>
     val ebookPublishers = databaseService.allEBookPublishers()
     Ok(Json.toJson(ebookPublishers))
   }
   
-  def links_ebookPublishers_insert(code: String) = Action(parse.json) { request =>
+  def links_ebookPublishers_insert(code: String) = withAuth(parse.json) {
+    case Some(x: AdminUser) => request =>
     val ebPublisherJSON = request.body
     ebPublisherJSON.validate[EBookPublisher](ebookPublisherReads(code)).fold (
       invalid => BadRequest("Invalid EBook Publisher"),
@@ -126,9 +143,11 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         Ok
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_ebookPublishers_delete(code: String) = Action(parse.json) { request =>
+  def links_ebookPublishers_delete(code: String) = withAuth(parse.json) { 
+    case Some(x: AdminUser) => request =>
     val ebPublisherJSON = request.body
     ebPublisherJSON.validate[EBookPublisher](ebookPublisherReads(code)).fold (
       invalid => BadRequest("Invalid EBook Publisher"),
@@ -137,9 +156,10 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         Ok
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_ebooks(code: String) = Action {
+  def links_ebooks(code: String) = withAuth() { _ => _ =>
     databaseService.allEBooks(code).map { list =>
       Ok(Json.toJson(list))
     } getOrElse {
@@ -147,7 +167,8 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
     }
   }
   
-  def links_ebooks_insert(code: String, name: String) = Action(parse.json) { request =>
+  def links_ebooks_insert(code: String, name: String) = withAuth(parse.json) {
+    case Some(x: AdminUser) => request =>
     val ebookJSON = request.body
     ebookJSON.validate[EBook](ebookReads(code, name)).fold (
       invalid => BadRequest("Invalid EBook"),
@@ -159,9 +180,11 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         }
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_ebooks_delete(code: String, name: String) = Action(parse.json) { request =>
+  def links_ebooks_delete(code: String, name: String) = withAuth(parse.json) { 
+    case Some(x: AdminUser) => request =>
     val ebookJSON = request.body
     ebookJSON.validate[EBook](ebookReads(code, name)).fold (
       invalid => BadRequest("Invalid EBook"),
@@ -173,14 +196,16 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         }
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_edatabases() = Action {
+  def links_edatabases() = withAuth() { _ => _ =>
     val edatabase = databaseService.allEDatabases()
     Ok(Json.toJson(edatabase))
   }
   
-  def links_edatabases_insert(name: String) = Action(parse.json) { request =>
+  def links_edatabases_insert(name: String) = withAuth(parse.json) { 
+    case Some(x: AdminUser) => request =>
     val edatabaseJSON = request.body
     edatabaseJSON.validate[EDatabase](edatabaseReads(name)).fold (
       invalid => BadRequest("Invalid EDatabase Publisher"),
@@ -189,9 +214,11 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         Ok
       }
     )
+    case _ => _ => Unauthorized
   }
   
-  def links_edatabases_delete(name: String) = Action(parse.json) { request =>
+  def links_edatabases_delete(name: String) = withAuth(parse.json) { 
+    case Some(x: AdminUser) => request =>
     val edatabaseJSON = request.body
     edatabaseJSON.validate[EDatabase](edatabaseReads(name)).fold (
       invalid => BadRequest("Invalid EDatabase Publisher"),
@@ -200,6 +227,7 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         Ok
       }
     )
+    case _ => _ => Unauthorized
   }
   
   def info_students_list() = Action {

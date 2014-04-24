@@ -44,7 +44,7 @@ class ApplicationSpec extends BetLiMSSpec {
 
     "render the search page for GET url /search" in withMockDatabase { (db, app) =>
       db.booksearch(any[BookSearch]) returns List[(Book, BookVariables)]()
-      val result = app.search(BookSearch(None, None, None, None, None, None))(FakeRequest(GET, "/search"))
+      val result = app.search(BookSearch(None, None, None, None, None, None))(FakeRequest(GET, "/search")).run
 
       testStatus(result)
       testContentType(result)
@@ -62,7 +62,7 @@ class ApplicationSpec extends BetLiMSSpec {
 
       val result = app.search(BookSearch(Some("Ashu"), None, None, None, None, None))(
          FakeRequest(GET, "/search?title=Ashu")
-      )
+      ).run
 
       testStatus(result)
       testContentType(result)
@@ -74,7 +74,7 @@ class ApplicationSpec extends BetLiMSSpec {
       "searchPost" in withMockDatabase { (db, app) =>
         val url = "/search?title=Ashu"
 
-        val result = app.searchPost().apply(FakeRequest("GET", url))
+        val result = app.searchPost().apply(FakeRequest("GET", url)).run
 
         status(result) must be equalTo(SEE_OTHER)
         redirectLocation(result) must be equalTo(Some(url))
