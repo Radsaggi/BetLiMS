@@ -77,9 +77,12 @@ trait SecuredForms extends Controller { base: SecuredBase =>
         withSession(writeUser(createUUID(user)): _*))
   }
 
-  def logout = Action {
-    Redirect(postLogout).withNewSession.flashing(
-      "success" -> "You are now logged out.")
+  def logout = withAuth() {
+    case Some(x) => req => 
+      Cache.remove(readUser(req).get.toString)
+      Redirect(postLogout).withNewSession.flashing(
+        "success" -> "You are now logged out.")
+    case _ => _ => Unauthorized
   }
 
   def createUUID(ul: UserLogin) = {
@@ -106,7 +109,7 @@ trait SecuredDatabaseExtension extends SecuredBase
   override type User = Models.User
   override type UserLogin = FormEncapsulators.UserLogin
 
-  override val loginForm = Forms.loginForm(authenticate(_).isDefined)
+  override val loginForm = Forms.loginForm(authenticateLocal(_).isDefined)
 
   override def readUser(request: RequestHeader) = {
     request.session.get(usernameField) map {
@@ -118,11 +121,11 @@ trait SecuredDatabaseExtension extends SecuredBase
     usernameField -> u.toString
   }
 
-  def authenticate(ul: UserLogin) = {
+  def authenticateLocal(ul: UserLogin) = {
     database.databaseService.authenticateStudentUser(ul).orElse {
       database.databaseService.authenticateAdminUser(ul)
     } map { user =>
-      val uuid = UUID.randomUUID.toString
+      val uuid = createUUID(ul).toString
       Cache.set(uuid, user, 0)
       uuid
     }

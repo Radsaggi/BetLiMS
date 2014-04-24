@@ -20,8 +20,8 @@ trait BetLiMSApplication extends Controller
   }
 
   def search(bs: BookSearch) = withAuth() { _ => _ =>
-    val list = databaseService.booksearch(bs)
-    Ok(views.html.search(Forms.searchForm.fill(bs))(Some(list))(None, loginForm))
+    val list = Some(bs) filter (_.isDefined) map (databaseService.booksearch(_))
+    Ok(views.html.search(Forms.searchForm.fill(bs))(list)(None, loginForm))
   }
 
   def searchPost() = withAuth() { _ => implicit req =>
