@@ -1,5 +1,7 @@
 package controllers
 
+import org.mindrot.jbcrypt.BCrypt
+
 import play.api.db.slick.DB
 import play.api.Application
 import play.api.db.slick.Config.driver.simple._
@@ -170,31 +172,35 @@ trait SlickDatabaseService extends DatabaseService {
   override def authenticateAdminUser(q: UserLogin): Option[AdminUser] = {
     DB(name) withSession { implicit session =>
       val a = for {
-        aAuth <- adminUsersAuth filter (_.userid === q.username) if (matchPasswords(aAuth.password, q.password))
+        aAuth <- adminUsersAuth filter (_.userid === q.username) 
         admin <- aAuth.admin
-      } yield admin
+      } yield (admin, aAuth.password)
       //Since userid is unique
-      a.list.headOption
+      a.list.headOption filter { x =>
+        matchPasswords(x._2, q.password)
+      } map (_._1)
     }
   }
   
   override def authenticateStudentUser(q: UserLogin): Option[StudentUser] = {
     DB(name) withSession { implicit session =>
       val s = for {
-        sAuth <- studentUsersAuth filter (_.userid === q.username) if (matchPasswords(sAuth.password, q.password))
+        sAuth <- studentUsersAuth filter (_.userid === q.username)
         student <- sAuth.student
-      } yield student
+      } yield (student, sAuth.password)
       //Since userid is unique
-      s.list.headOption
+      s.list.headOption filter { x =>
+        matchPasswords(x._2, q.password)
+      } map (_._1)
     }
   }
 
-  private def matchPasswords(passCorrect: Column[String], passRequest: String) = {
-    passCorrect === passRequest
+  private def matchPasswords(passHash: String, passRequest: String) = {
+    BCrypt.checkpw(passRequest, passHash)
   }
 
   private def encryptPassword(pass: String) = {
-    pass
+    BCrypt.hashpw(pass, BCrypt.gensalt());
   }
   
   override def allEJournalPublishers() = DB(name) withSession { implicit session =>
