@@ -29,6 +29,20 @@ trait BetLiMSApplication extends Controller with DatabaseServiceProvider{
       bs => Redirect(routes.BetLiMSApplication.search(bs))
     )
   }
+  
+  def personal() = Action {
+    val userid = "1201CS41"
+    val issues = databaseService.issueList(userid) map { ie =>
+      (ie.date.getTime, databaseService.bookInfo(ie.isbn).get)
+    }
+    val requests = databaseService.issueRequestList(userid) map { ie =>
+      (ie.date.getTime, databaseService.bookInfo(ie.isbn).get)
+    }
+    val history = databaseService.returnList(userid) take 5 map { re =>
+      (re.issueDate.getTime, databaseService.bookInfo(re.isbn).get, re.returnDate.getTime)
+    }
+    Ok(views.html.personal(issues, requests, history)(None, Forms.loginForm))
+  }
 
 }
 
@@ -186,6 +200,30 @@ trait BetLiMSRestfulServer extends Controller with DatabaseServiceProvider {
         Ok
       }
     )
+  }
+  
+  def info_students_list() = Action {
+    Ok(Json.toJson(databaseService.studentUsersList))
+  }
+  
+  def info_admins_list() = Action {
+    Ok(Json.toJson(databaseService.adminUsersList))
+  }
+  
+  def info_books_list() = Action { 
+    Ok(Json.toJson(databaseService.booksList))
+  }
+  
+  def info_students(userid: String) = Action {
+    Ok(Json.toJson(databaseService.studentUserInfo(userid)))
+  }
+  
+  def info_admins(userid: String) = Action {
+    Ok(Json.toJson(databaseService.adminUserInfo(userid)))
+  }
+  
+  def info_books(isbn: String) = Action {
+    Ok(Json.toJson(databaseService.bookInfo(isbn)))
   }
   
 }
