@@ -3,7 +3,7 @@
 @admin_temp("Add Book")("admin_addBook"){
 	   
             <div id="container">
-                <form action="login_process.php" method="post">
+            @helper.form(action=routes.BetLiMSApplication.searchPost(),'id -> "txt"){
                     <label for="isbn">ISBN:</label>
                     <input type="text" id="isbn" name="isbn">
                     <label for="title">Title:</label>
@@ -13,6 +13,7 @@
                     <div id="lower">
                         <input type="submit" value="ADD BOOKS" align="center">
                     </div><!---/ lower-->
-                </form>
+                
+                }
             </div>
    } 

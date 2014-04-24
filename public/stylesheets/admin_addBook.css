@@ -1,11 +1,4 @@
-#form {
-	margin-top:20px;
-	border:2px solid #fff;
-	font-size:20px;
-	border-radius: 10px;
-	padding-top:5px;
-	padding-bottom:6px;
-      }
+
 
       #container {
             position: fixed;
@@ -77,12 +70,7 @@
             color:#901;
         }
         
-        .check {
-            margin-left: 3px;
-            font-size: 17px;
-            color: #901;
-            text-shadow: 0 1px 0 #fff;
-        }
+        
         input[type=submit] {
 	    margin-left:auto;
             margin-right: auto;

@@ -1,8 +1,6 @@
 
-      
-
       #container {
-            position: fixed;
+            position: absolute;
             width: 345px;
             height: 195px;
             top: 50%;
@@ -15,7 +13,7 @@
             border-width:2px;
             border-color:#cba;
             box-shadow: 0 1px 2px rgba(0, 0, 0, .1);
-            color:#807423;
+
         }
         form {
             margin: 0 auto;
@@ -63,7 +61,7 @@
         
         input[type=submit] {
             margin-right: auto;
-            margin-left:auto;
+            margin-left: auto;
             margin-top: 10px;
             width: 140px;
             height: 40px;
@@ -76,9 +74,12 @@
             box-shadow: 0 1px 2px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .5);
             cursor: pointer;
         }
-        
+        input[type=submit]:hover {
+        }
         input[type=submit]:active {
             background-image: -webkit-gradient(linear, left top, left bottom, from(#6ec2e8), to(#b6e2ff));
             background-image: -moz-linear-gradient(top left 90deg, #6ec2e8 0%, #b6e2ff 100%);
             background-image: linear-gradient(top left 90deg, #6ec2e8 0%, #b6e2ff 100%);
         }
+        
+        

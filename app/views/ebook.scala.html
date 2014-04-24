@@ -25,7 +25,6 @@
 	tbl.style.width='60%';
 	tbl.setAttribute('border','1');
 	var tbdy=document.createElement('tbody');
-	var tr=document.createElement('tr');
 	
 	for(var i=0;i<data.length;i++){
 	  var tr=document.createElement('tr');
@@ -48,8 +47,48 @@
     alert("error");
     alert(errorText + " " + errorThrown);
   })
-  function tableCreate(){
-
+  $.ajax({
+    type: 'GET',
+    url: '/links/ebooks',
+    data: {
+      name: 'abcd',
+      url : 'https://www.google.com'
+    },
+    dataType: "json"
+  })
+  .done(function(data) {
+    if(data.length == 0){
+         $(document).write("No Publishers Available");
+     } else {
+	var body=document.getElementsByTagName('body')[0];
+	var tbl=document.createElement('table');
+	tbl.style.width='60%';
+	tbl.setAttribute('border','1');
+	var tbdy=document.createElement('tbody');
+	
+	for(var i=0;i<data.length;i++){
+	  var tr=document.createElement('tr');
+	  for(var j=0;j<2;j++){
+		var td=document.createElement('td');
+		var dt="";
+		if(j==0) dt=i+1;
+		else dt=data[i].name;
+		td.appendChild(document.createTextNode(dt))
+		tr.appendChild(td)
+	  }
+	  tbdy.appendChild(tr);
+	}
+	tbl.appendChild(tbdy);
+	body.appendChild(tbl)
+}
+     
+  })
+  .fail(function(jxHeader, errorText, errorThrown) {
+    alert("error");
+    alert(errorText + " " + errorThrown);
+  })
+  function tableCreate(row){
+	 
 }
   </script>
   
