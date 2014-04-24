@@ -22,9 +22,9 @@ import play.api.data.validation.ValidationError
 
 import Models._
 /**
- *Object JsonWrappers created to define method
- *@param name,code,url are strings
- *Name,Code,URL are directed to respective publisher details
+ * Object JsonWrappers created to define method
+ * This object defines the Reads and writes that convert native Scala type into/from JSON
+ * Name,Code,URL are directed to respective publisher details
  */
 object JsonWrappers {
   
@@ -36,9 +36,12 @@ object JsonWrappers {
     )
   }
 /**
- *@param name,url are strings 
- *@param year accessed is integer
- *year accessed,url,name are directed to respective journal details
+ * the name of the journal is encoded as journal.name
+ * the url of the journal is encoded as journal.url
+ * the year accessed of the journal is encoded as journal.accessYear
+ * For ex: krooked-name of journal is encoded as journal.krooked
+ * 	   url-krooked journal is encoded as journal.url
+ * 	   yearaccessed is encoded as krooked.2014
  */   
   implicit val ejournalWrites = new Writes[EJournal] {
     def writes(journal: EJournal) = Json.obj(
@@ -48,8 +51,12 @@ object JsonWrappers {
     )
   }
 /**
- *@param name,code,url are strings
- *name,code,url are directed to respective publisher details 
+ * the name of the publisher is encoded as publisher.name
+ * the url of the publisher is encoded as publisher.url
+ * the code of the publisher is encoded as publisher.code 
+ * For ex: krooked-name of publisher is encoded as krooked.name
+ * 	   url-krooked journal is encoded as krooked.url
+ * 	   code is encoded as krooked.code
  */ 
   implicit val ebookPublisherWrites = new Writes[EBookPublisher] {
     def writes(publisher: EBookPublisher) = Json.obj(
@@ -59,8 +66,11 @@ object JsonWrappers {
     )
   }
 /**
- *@param name,url are strings
- *name,url are directed to respective publisher details
+ * the name of the book is encoded as book.name
+ * the url of the book is encoded as book.url
+ * For example:
+ * krooked-name of book is encoded as krooked.name
+ * url-krooked book is encoded as krooked.url
  */  
   implicit val ebookWrites = new Writes[EBook] {
     def writes(book: EBook) = Json.obj(
@@ -69,8 +79,11 @@ object JsonWrappers {
     )
   }
 /**
- *name,url are strings
- *name,url are directed to respective database details
+ * the name of the database is encoded as database.name
+ * the url of the database is encoded as database.url
+ * For example:
+ *         krooked-name of database is encoded as krooked.name
+ * 	   url-url of the database  is encoded as krooked.url
  */  
   implicit val edatabaseWrites = new Writes[EDatabase] {
     def writes(database: EDatabase) = Json.obj(
@@ -79,8 +92,13 @@ object JsonWrappers {
     )
   }
 /**
- *@param name,url,code are the strings
- *This defines that each JsPath directs to do each task
+ * name is read as a string 
+ * url is read as a string
+ * code is read as a string
+ * ejournalpublisher.name is read as name
+ * ejournalpublisher.url is read as url
+ * ejournalpulisher.code is read as code
+ * ejournalpublisher.code,ejournalpublisher.url,ejournalpublisher.url defaultly reads as code 
  */   
   val ejournalPublisherReads: String => Reads[EJournalPublisher] = code => (
     (JsPath \ "name").read[String] and
@@ -88,9 +106,14 @@ object JsonWrappers {
     (JsPath \ "code").read[String](defaultValueReads(code))
   )(EJournalPublisher)
 /**
- *@param name,url,publishercode are the strings
- *@param yearaccessed is integer type
- *This defines that each JsPath directs to do each task
+ * name is read as a string 
+ * url is read as a string
+ * year is read as a string
+ * ejournal.name is read as name
+ * ejournal.url is read as url
+ * ejournal.yearaccessed is read as Accessed Year
+ * ejournal.publishercode is read as Publisher code
+ * ejournalpublisher.name,ejournalpublisher.url,ejournalpublisher.yearaccessed,ejournal.publishercode defaultly reads as code 
  */     
   val ejournalReads: (String, String) => Reads[EJournal] = (code, name) => (
     (JsPath \ "name").read[String](defaultValueReads(name)) and
@@ -99,8 +122,14 @@ object JsonWrappers {
     (JsPath \ "publisherCode").read[String](defaultValueReads(code))
   )(EJournal)
 /**
- *@param name,url,code are the strings
- *This defines that each JsPath directs to do each task
+ * name is read as a string 
+ * url is read as a string
+ * code is read as a string
+ * ebookpublisher.name is read as name
+ * ebookpublisher.url is read as url
+ * ebookpulisher.code is read as code
+ * ebookpublisher.code,ebookpublisher.url,ebookpublisher.name defaultly reads as code 
+ */
  */     
   val ebookPublisherReads: String => Reads[EBookPublisher] = code => (
     (JsPath \ "name").read[String] and
@@ -108,26 +137,35 @@ object JsonWrappers {
     (JsPath \ "code").read[String](defaultValueReads(code))
   )(EBookPublisher)
 /**
- *@param name,url,publishercode are the strings
- *This defines that each JsPath directs to do each task
- */     
+ * name is read as a string 
+ * url is read as a string
+ * publishercode is read as a string
+ * ebook.name is read as name
+ * ebook.url is read as url
+ * ebook.publishercode is read as code
+ * ebook.code,ebook.url,ebook.publishercode defaultly reads as code 
+ */*/     
   val ebookReads: (String, String) => Reads[EBook] = (code, name) => (
     (JsPath \ "name").read[String](defaultValueReads(name)) and
     (JsPath \ "url").read[String] and
     (JsPath \ "publisherCode").read[String](defaultValueReads(code))
   )(EBook)
 /**
- *@param name,url are the strings
- *This defines that each JsPath directs to do each task
+ * name is read as a string 
+ * url is read as a string
+ * edatabase.name is read as name
+ * edatabase.url is read as url
+ * edatabase.name,edatabase.url defaultly reads as code 
+ */
  */     
   val edatabaseReads: (String) => Reads[EDatabase] = (name) => (
     (JsPath \ "name").read[String](defaultValueReads(name)) and
     (JsPath \ "url").read[String]
   )(EDatabase)
 /**
- *Reads noerror if its mapped correctly and 
- *Reads the filtered value else 
- *Returns error for unexpected value
+ * Reads noerror if its mapped correctly and 
+ * Reads the filtered value else 
+ * Returns error for unexpected value
  */   
   def defaultValueReads[T](default: T)(implicit r: Reads[T]) = {
     Reads.optionNoError[T].map(_.getOrElse(default)) keepAnd
